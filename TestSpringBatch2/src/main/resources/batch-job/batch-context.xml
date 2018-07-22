@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:batch="http://www.springframework.org/schema/batch"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd">
+
+	<bean id="step1Reader" class="com.test.TestSpringBatch2.step1.itemReader.Step1ItemReader" />
+	
+	<bean id="step1Processor" class="com.test.TestSpringBatch2.step1.itemProcessor.Step1ItemProcessor" />
+	
+	<bean id="step1Writer" class="com.test.TestSpringBatch2.step1.itemWriter.Step1ItemWriter">
+	</bean>
+	
+	<bean id="step2Reader" class="com.test.TestSpringBatch2.step2.itemReader.Step2ItemReader">
+	</bean>
+	
+	<bean id="step2Processor" class="com.test.TestSpringBatch2.step2.itemProcessor.Step2ItemProcessor" />
+	
+	<bean id="step2Writer" class="com.test.TestSpringBatch2.step2.itemWriter.Step2ItemWriter" />
+	
+	<batch:job id="job">
+		<batch:step id="step1" next="step2">
+			<tasklet allow-start-if-complete="true">
+				<batch:chunk reader="step1Reader"
+					   			processor="step1Processor"
+					   			writer="step1Writer"
+					   			commit-interval="5">
+				</batch:chunk>
+				
+			</tasklet>
+			
+		</batch:step>
+		<batch:step id="step2">
+			<tasklet allow-start-if-complete="true">
+				<chunk reader="step2Reader"
+					   processor="step2Processor"
+					   writer="step2Writer"
+					   commit-interval="3" />
+			</tasklet>
+		</batch:step>
+	</batch:job>
+
+</beans>
